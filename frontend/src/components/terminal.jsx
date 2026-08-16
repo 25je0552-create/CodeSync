@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 
-// How long the Completed/Failed status stays before reverting to Ready.
 const STATUS_RESET_DELAY_MS = 3000;
 
 function Terminal({
@@ -19,8 +18,6 @@ function Terminal({
     }
   }, [output, running]);
 
-  // Once a run finishes, show Completed/Failed briefly, then settle back to Ready.
-  // This only affects the status pill's label — output stays visible either way.
   const [settled, setSettled] = useState(false);
 
   useEffect(() => {
@@ -37,8 +34,6 @@ function Terminal({
     return () => clearTimeout(timer);
   }, [running, output]);
 
-  // UI-only classification of the output text, purely for display styling.
-  // Does not touch execution logic — same output/runInfo/running props as before.
   const hasOutput = output !== "";
   const looksLikeError =
     hasOutput &&
@@ -55,33 +50,29 @@ function Terminal({
     : "ready";
 
   const statusConfig = {
-    ready: { label: "Ready", color: "text-slate-400", dot: "bg-slate-500" },
-    running: { label: "Running", color: "text-amber-400", dot: "bg-amber-400" },
-    completed: { label: "Completed", color: "text-emerald-400", dot: "bg-emerald-400" },
-    failed: { label: "Failed", color: "text-red-400", dot: "bg-red-400" },
+    ready: { label: "READY", color: "text-[#999999]" },
+    running: { label: "EXECUTING", color: "text-[#d4a017]" },
+    completed: { label: "COMPLETED", color: "text-[#5fa657]" },
+    failed: { label: "FAILED", color: "text-[#ff5f57]" },
   }[status];
 
   return (
-    <div className="h-72 bg-black text-slate-200 flex flex-col border-t border-white/15">
+    <div className="h-72 bg-[#000000] text-white flex flex-col border-t border-[#262626] font-bugatti-mono selection:bg-white selection:text-black">
       {/* HEADER */}
-      <div className="h-9 bg-black border-b border-white/15 flex items-center justify-between px-3">
+      <div className="h-10 bg-[#0d0d0d] border-b border-[#262626] flex items-center justify-between px-4">
         <div className="flex items-center gap-3">
-          <div className="flex gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-            <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-            <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-          </div>
-          <span className="text-slate-400 font-medium text-[11px] tracking-widest">
-            TERMINAL
+          <div className="w-2 h-2 bg-white rounded-full" />
+          <span className="text-[11px] uppercase tracking-[2.5px] text-white">
+            TERMINAL // RUNNER ENGINE
           </span>
         </div>
 
         {hasOutput && (
           <button
             onClick={onClear}
-            className="text-xs text-slate-500 hover:text-slate-200 transition-colors"
+            className="text-xs uppercase tracking-[2px] text-[#999999] hover:text-white transition-colors cursor-pointer"
           >
-            Clear
+            CLEAR OUTPUT
           </button>
         )}
       </div>
@@ -89,9 +80,9 @@ function Terminal({
       {/* BODY */}
       <div className="flex flex-1 overflow-hidden">
         {/* INPUT */}
-        <div className="w-1/2 flex flex-col border-r border-white/15 min-w-0">
-          <div className="px-3.5 pt-3 pb-2 text-[10px] font-semibold uppercase tracking-widest text-slate-500">
-            Program Input
+        <div className="w-1/2 flex flex-col border-r border-[#262626] min-w-0 bg-[#000000]">
+          <div className="px-4 pt-3 pb-2 text-[10px] font-semibold uppercase tracking-[2px] text-[#666666]">
+            PROGRAM INPUT (STDIN)
           </div>
 
           <textarea
@@ -102,66 +93,65 @@ function Terminal({
               flex-1
               resize-none
               bg-transparent
-              text-slate-200
-              font-mono
-              text-[13.5px]
+              text-[#e6e6e6]
+              font-bugatti-mono
+              text-[13px]
               leading-6
               outline-none
               border-0
-              px-3.5
+              px-4
               pb-2
-              caret-blue-400
-              placeholder:text-slate-600
+              caret-white
+              placeholder:text-[#666666]
             "
-            placeholder="Enter program input..."
+            placeholder="Provide standard input here..."
           />
 
-          <div className="h-7 flex items-center px-3.5 text-[11px] text-slate-500">
-            {programInput === "" ? "0 lines" : `${programInput.split("\n").length} lines`}
+          <div className="h-7 border-t border-[#262626]/50 flex items-center px-4 text-[10px] uppercase tracking-[1.5px] text-[#666666]">
+            {programInput === "" ? "0 LINES" : `${programInput.split("\n").length} LINES`}
           </div>
         </div>
 
         {/* OUTPUT */}
-        <div className="w-1/2 flex flex-col min-w-0">
-          <div className="px-3.5 pt-3 pb-2 text-[10px] font-semibold uppercase tracking-widest text-slate-500">
-            Output
+        <div className="w-1/2 flex flex-col min-w-0 bg-[#000000]">
+          <div className="px-4 pt-3 pb-2 text-[10px] font-semibold uppercase tracking-[2px] text-[#666666]">
+            STDOUT / DIAGNOSTICS
           </div>
 
           <div
             ref={outputRef}
-            className="flex-1 overflow-auto px-3.5 pb-2 font-mono text-[13.5px] leading-6"
+            className="flex-1 overflow-auto px-4 pb-2 font-bugatti-mono text-[13px] leading-6"
           >
             {running ? (
-              <div className="flex items-center gap-2 text-amber-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                Running...
+              <div className="flex items-center gap-2 text-[#d4a017]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#d4a017] animate-pulse" />
+                EXECUTING CODE...
               </div>
             ) : hasOutput ? (
               <pre
                 className={`whitespace-pre-wrap break-words m-0 ${
-                  looksLikeError ? "text-red-400" : "text-slate-200"
+                  looksLikeError ? "text-[#ff5f57]" : "text-[#e6e6e6]"
                 }`}
               >
                 {output}
               </pre>
             ) : (
-              <div className="text-slate-500">
-                No output yet.
+              <div className="text-[#666666] text-xs">
+                NO OUTPUT GENERATED.
                 <br />
-                Run your program to see the results.
+                CLICK RUN CODE TO EXECUTE.
               </div>
             )}
           </div>
 
-          <div className="h-7 flex items-center justify-between px-3.5 text-[11px]">
-            <span className={`flex items-center gap-1.5 ${statusConfig.color}`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${statusConfig.dot}`} />
-              {statusConfig.label}
+          <div className="h-7 border-t border-[#262626]/50 flex items-center justify-between px-4 text-[10px] uppercase tracking-[1.5px]">
+            <span className={`flex items-center gap-2 ${statusConfig.color}`}>
+              STATUS // {statusConfig.label}
             </span>
 
             {runInfo && !running && (
-              <span className="text-slate-500">
-                {runInfo.time}s · {runInfo.memory} KB
+              <span className="text-[#666666]">
+                TIME: {runInfo.time}S · MEM: {runInfo.memory} KB
               </span>
             )}
           </div>

@@ -1,52 +1,51 @@
-function BattleType({
-  battleType,
-  setBattleType,
-}) {
+function BattleType({ battleType, setBattleType }) {
   return (
     <div className="grid grid-cols-2 gap-4">
-
       <button
-        onClick={() =>
-          setBattleType("private")
-        }
+        type="button"
+        onClick={() => setBattleType("private")}
         className={`
           py-3
-          rounded-xl
+          font-bugatti-mono
+          text-xs
+          uppercase
+          tracking-[2px]
           border
-          font-semibold
+          rounded-none
           transition-all
-
+          cursor-pointer
           ${
             battleType === "private"
-              ? "bg-blue-600 text-white border-blue-600"
-              : "bg-white border-slate-300 text-slate-700 hover:bg-blue-50"
+              ? "bg-white text-black border-white"
+              : "bg-transparent text-[#999999] border-[#262626] hover:border-[#3a3a3a] hover:text-white"
           }
         `}
       >
-        🔒 Private
+        PRIVATE ARENA
       </button>
 
       <button
-        onClick={() =>
-          setBattleType("public")
-        }
+        type="button"
+        onClick={() => setBattleType("public")}
         className={`
           py-3
-          rounded-xl
+          font-bugatti-mono
+          text-xs
+          uppercase
+          tracking-[2px]
           border
-          font-semibold
+          rounded-none
           transition-all
-
+          cursor-pointer
           ${
             battleType === "public"
-              ? "bg-blue-600 text-white border-blue-600"
-              : "bg-white border-slate-300 text-slate-700 hover:bg-blue-50"
+              ? "bg-white text-black border-white"
+              : "bg-transparent text-[#999999] border-[#262626] hover:border-[#3a3a3a] hover:text-white"
           }
         `}
       >
-        🌍 Public
+        PUBLIC MATCH
       </button>
-
     </div>
   );
 }

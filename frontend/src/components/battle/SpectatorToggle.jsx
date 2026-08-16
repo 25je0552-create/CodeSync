@@ -1,62 +1,32 @@
-function SpectatorToggle({
-  allowSpectators,
-  setAllowSpectators,
-}) {
+function SpectatorToggle({ allowSpectators, setAllowSpectators }) {
   return (
-    <div
-      className="
-      flex
-      items-center
-      justify-between
-      bg-slate-100
-      rounded-xl
-      px-5
-      py-3
-      "
-    >
-      <span className="font-medium text-slate-700">
-        Allow Spectators
+    <div className="flex items-center justify-between bg-[#000000] border border-[#262626] p-4">
+      <span className="font-bugatti-mono text-xs uppercase tracking-[2px] text-[#cccccc]">
+        SPECTATOR OBSERVATION MODE
       </span>
 
       <button
-        onClick={() =>
-          setAllowSpectators(
-            !allowSpectators
-          )
-        }
+        type="button"
+        onClick={() => setAllowSpectators(!allowSpectators)}
         className={`
-          w-14
-          h-8
-          rounded-full
-          transition
-          relative
-
+          px-4
+          py-1.5
+          font-bugatti-mono
+          text-xs
+          uppercase
+          tracking-[2px]
+          border
+          transition-all
+          cursor-pointer
           ${
             allowSpectators
-              ? "bg-blue-600"
-              : "bg-slate-300"
+              ? "bg-white text-black border-white"
+              : "bg-transparent text-[#666666] border-[#262626]"
           }
         `}
       >
-        <div
-          className={`
-            absolute
-            top-1
-            w-6
-            h-6
-            bg-white
-            rounded-full
-            transition-all
-
-            ${
-              allowSpectators
-                ? "right-1"
-                : "left-1"
-            }
-          `}
-        />
+        {allowSpectators ? "ENABLED" : "DISABLED"}
       </button>
-
     </div>
   );
 }

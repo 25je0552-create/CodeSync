@@ -31,173 +31,122 @@ function ResetPassword() {
     }
 
     if (formData.password.length < 6) {
-      toast.error(
-        "Password must be at least 6 characters"
-      );
+      toast.error("Password must be at least 6 characters");
       return;
     }
 
-    if (
-      formData.password !==
-      formData.confirmPassword
-    ) {
+    if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
       return;
     }
 
     try {
-      toast.loading("Updating password...", {
-        id: "reset",
-      });
+      toast.loading("Updating password...", { id: "reset" });
 
       const res = await axios.post(
         `http://localhost:5000/api/auth/reset-password/${token}`,
-        {
-          password: formData.password,
-        }
+        { password: formData.password }
       );
 
-      toast.success(res.data.message, {
-        id: "reset",
-      });
+      toast.success(res.data.message, { id: "reset" });
 
       setTimeout(() => {
         navigate("/login");
       }, 2000);
-
     } catch (error) {
-      toast.error(
-        error.response?.data?.message ||
-          "Reset failed",
-        {
-          id: "reset",
-        }
-      );
+      toast.error(error.response?.data?.message || "Reset failed", {
+        id: "reset",
+      });
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc]">
-      <div className="max-w-7xl mx-auto px-6">
+    <div className="min-h-screen bg-[#000000] text-white flex flex-col justify-between selection:bg-white selection:text-black">
+      <header className="h-14 border-b border-[#262626] flex items-center justify-between px-8">
+        <div className="bugatti-wordmark">CODESYNC</div>
+        <div className="font-bugatti-mono text-[11px] uppercase tracking-[2px] text-[#999999]">
+          SECURITY RESET
+        </div>
+      </header>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center min-h-screen">
-
-          {/* Left Side */}
-
-          <div>
-
-            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-600 px-4 py-2 rounded-full font-medium mb-6">
-              🔐 Secure Account
+      <main className="max-w-7xl w-full mx-auto px-8 py-12 flex-1 flex items-center">
+        <div className="grid lg:grid-cols-12 gap-16 items-center w-full">
+          <div className="lg:col-span-7 space-y-8">
+            <div className="inline-block border border-[#262626] bg-[#0d0d0d] px-4 py-1.5 font-bugatti-mono text-[11px] uppercase tracking-[2px] text-[#cccccc]">
+              CREDENTIAL UPDATE
             </div>
 
-            <h1 className="text-6xl font-bold text-slate-900 leading-tight">
-              Create a
+            <h1 className="font-bugatti-display text-5xl sm:text-7xl font-normal leading-[1.05] tracking-[3px] text-white uppercase">
+              ESTABLISH NEW
               <br />
-              New Password
+              CREDENTIALS.
             </h1>
 
-            <p className="mt-6 text-xl text-slate-600">
-              Your new password should be
-              strong and different from the
-              one you used previously.
+            <p className="font-bugatti-serif text-xl sm:text-2xl text-[#cccccc] max-w-xl leading-relaxed">
+              Your new password should be strong, unique, and stored securely.
             </p>
-
           </div>
 
-          {/* Right Side */}
-
-          <div className="flex justify-center">
-
-            <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
-
-              <div className="text-center mb-8">
-
-                <h1 className="text-5xl font-extrabold">
-
-                  <span className="text-slate-900">
-                    Code
-                  </span>
-
-                  <span className="text-blue-600">
-                    Sync
-                  </span>
-
-                </h1>
-
-                <p className="text-slate-500 mt-2">
-                  Reset Password
+          <div className="lg:col-span-5 flex justify-center">
+            <div className="w-full max-w-md bg-[#141414] border border-[#262626] rounded-none p-8 sm:p-10 shadow-2xl">
+              <div className="mb-8 text-center border-b border-[#262626] pb-6">
+                <h2 className="font-bugatti-display text-3xl tracking-[4px] text-white uppercase">
+                  CODESYNC
+                </h2>
+                <p className="font-bugatti-mono text-[11px] uppercase tracking-[2px] text-[#999999] mt-2">
+                  RESET PASSWORD
                 </p>
-
               </div>
 
-              <form
-                onSubmit={handleReset}
-                className="space-y-4"
-              >
-
+              <form onSubmit={handleReset} className="space-y-6">
                 <div className="relative">
-
+                  <label className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#999999] block mb-1">
+                    NEW PASSWORD
+                  </label>
                   <input
-                    type={
-                      showPassword
-                        ? "text"
-                        : "password"
-                    }
+                    type={showPassword ? "text" : "password"}
                     name="password"
-                    placeholder="New Password"
+                    placeholder="••••••••"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full border border-slate-300 rounded-xl p-4"
+                    className="bugatti-input pr-10"
                   />
-
                   <button
                     type="button"
-                    className="absolute right-4 top-5 text-slate-500"
-                    onClick={() =>
-                      setShowPassword(
-                        !showPassword
-                      )
-                    }
+                    className="absolute right-0 bottom-3 text-[#666666] hover:text-white transition-colors"
+                    onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? (
-                      <FaEyeSlash />
-                    ) : (
-                      <FaEye />
-                    )}
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
-
                 </div>
 
-                <input
-                  type={
-                    showPassword
-                      ? "text"
-                      : "password"
-                  }
-                  name="confirmPassword"
-                  placeholder="Confirm Password"
-                  value={
-                    formData.confirmPassword
-                  }
-                  onChange={handleChange}
-                  className="w-full border border-slate-300 rounded-xl p-4"
-                />
+                <div>
+                  <label className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#999999] block mb-1">
+                    CONFIRM PASSWORD
+                  </label>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="confirmPassword"
+                    placeholder="••••••••"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className="bugatti-input"
+                  />
+                </div>
 
-                <button
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-4 font-semibold"
-                >
-                  Reset Password
+                <button type="submit" className="bugatti-button-primary w-full">
+                  RESET PASSWORD
                 </button>
-
               </form>
-
             </div>
-
           </div>
-
         </div>
+      </main>
 
-      </div>
+      <footer className="h-16 border-t border-[#262626] flex items-center justify-between px-8 text-[#666666] font-bugatti-mono text-[11px] tracking-[2px] uppercase">
+        <div>© CODESYNC AUTOMOTIVE LUXURY UI</div>
+        <div>ALL RIGHTS RESERVED</div>
+      </footer>
     </div>
   );
 }

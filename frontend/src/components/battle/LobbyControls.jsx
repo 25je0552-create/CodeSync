@@ -2,29 +2,19 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import battleSocket from "../../socket/battleSocket";
 
-function LobbyControls({
-  battleId,
-  battle,
-  isHost,
-}) {
+function LobbyControls({ battleId, battle, isHost }) {
   const username = localStorage.getItem("username");
-
   const [loading, setLoading] = useState(false);
 
   const currentPlayer = battle?.players.find(
     (player) => player.username === username
   );
 
-  const everyoneReady = battle.players.every(
-    (player) => player.ready
-  );
-
-  const enoughPlayers =
-    battle.players.length >= 2;
+  const everyoneReady = battle.players.every((player) => player.ready);
+  const enoughPlayers = battle.players.length >= 2;
 
   const handleReady = () => {
     if (loading) return;
-
     setLoading(true);
 
     battleSocket.emit("toggleReady", {
@@ -40,15 +30,14 @@ function LobbyControls({
   };
 
   const handleStartBattle = () => {
-  battleSocket.emit("startBattle", {
-    battleId,
-    username,
-  });
+    battleSocket.emit("startBattle", {
+      battleId,
+      username,
+    });
 
-  toast.success("Starting Battle...");
-};
+    toast.success("Starting Battle...");
+  };
 
-  // Presentational only — used to explain why Start Battle is disabled.
   const startBlockedReason = !enoughPlayers
     ? "Waiting for at least 2 players"
     : !everyoneReady
@@ -56,12 +45,11 @@ function LobbyControls({
     : null;
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-200 p-6 space-y-6">
-
+    <div className="bg-[#141414] border border-[#262626] p-6 space-y-6 rounded-none">
       {/* Battle ID */}
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
-          Battle ID
+        <p className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666] mb-2">
+          BATTLE ID KEY
         </p>
 
         <button
@@ -69,48 +57,19 @@ function LobbyControls({
             navigator.clipboard.writeText(battleId);
             toast.success("Battle ID copied!");
           }}
-          className="
-            w-full
-            flex
-            items-center
-            justify-between
-            gap-3
-            bg-slate-50
-            hover:bg-slate-100
-            border
-            border-slate-200
-            rounded-xl
-            px-4
-            py-3
-            transition
-            group
-          "
+          className="w-full flex items-center justify-between bg-[#000000] border border-[#262626] hover:border-white px-4 py-3 font-bugatti-mono text-xs uppercase tracking-[1.5px] text-white transition-colors cursor-pointer"
         >
-          <span className="font-mono text-sm text-slate-700 truncate">
-            {battleId}
-          </span>
-          <span
-            className="
-              flex
-              items-center
-              gap-1.5
-              text-blue-600
-              text-sm
-              font-semibold
-              shrink-0
-            "
-          >
-            📋 Copy
-          </span>
+          <span className="truncate">{battleId}</span>
+          <span className="text-[#c3d9f3] shrink-0">COPY</span>
         </button>
       </div>
 
-      <div className="h-px bg-slate-100" />
+      <div className="h-px bg-[#262626]" />
 
       {/* Your Status */}
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
-          Your Status
+        <p className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666] mb-2">
+          PLAYER STATUS
         </p>
 
         <button
@@ -119,97 +78,76 @@ function LobbyControls({
           className={`
             w-full
             py-3
-            rounded-xl
-            font-semibold
-            text-white
-            transition
-            flex
-            items-center
-            justify-center
-            gap-2
-
+            font-bugatti-mono
+            text-xs
+            uppercase
+            tracking-[2.5px]
+            border
+            rounded-full
+            transition-all
+            cursor-pointer
             ${
               currentPlayer?.ready
-                ? "bg-yellow-500 hover:bg-yellow-600"
-                : "bg-green-600 hover:bg-green-700"
+                ? "bg-transparent text-[#d4a017] border-[#d4a017] hover:bg-[#d4a017]/10"
+                : "bg-transparent text-[#5fa657] border-[#5fa657] hover:bg-[#5fa657]/10"
             }
-
-            ${
-              loading
-                ? "opacity-60 cursor-not-allowed"
-                : ""
-            }
+            ${loading ? "opacity-50 cursor-not-allowed" : ""}
           `}
         >
           {loading
-            ? "⏳ Updating..."
+            ? "UPDATING..."
             : currentPlayer?.ready
-            ? "❌ Not Ready"
-            : "✅ Ready"}
+            ? "MARK NOT READY"
+            : "MARK READY"}
         </button>
 
-        <button
-          className="
-            mt-3
-            w-full
-            bg-white
-            hover:bg-red-50
-            text-red-600
-            border
-            border-red-200
-            rounded-xl
-            py-3
-            font-semibold
-            transition
-          "
-        >
-          🚪 Leave Battle
+        <button className="mt-3 w-full bugatti-button-secondary py-2.5 text-xs text-center">
+          LEAVE ARENA
         </button>
       </div>
 
       {/* Host Controls */}
       {isHost && (
         <>
-          <div className="h-px bg-slate-100" />
+          <div className="h-px bg-[#262626]" />
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
-              Host Controls
+            <p className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666] mb-2">
+              HOST CONTROLS
             </p>
 
             <button
               onClick={handleStartBattle}
-              disabled={
-                !everyoneReady ||
-                !enoughPlayers
-              }
+              disabled={!everyoneReady || !enoughPlayers}
               className={`
                 w-full
                 py-3
-                rounded-xl
-                font-semibold
-                text-white
-                transition
-
+                font-bugatti-mono
+                text-xs
+                uppercase
+                tracking-[2.5px]
+                border
+                rounded-full
+                transition-all
+                cursor-pointer
                 ${
                   everyoneReady && enoughPlayers
-                    ? "bg-purple-600 hover:bg-purple-700"
-                    : "bg-slate-300 cursor-not-allowed"
+                    ? "bg-white text-black border-white hover:bg-white/90"
+                    : "bg-transparent text-[#666666] border-[#262626] cursor-not-allowed"
                 }
               `}
             >
-              🚀 Start Battle
+              START BATTLE
             </button>
 
             {startBlockedReason && (
-              <p className="mt-2 text-xs text-slate-400 text-center">
+              <p className="mt-3 font-bugatti-mono text-[10px] uppercase tracking-[1.5px] text-[#666666] text-center">
                 {startBlockedReason}
               </p>
             )}
           </div>
         </>
       )}
-
     </div>
   );
 }

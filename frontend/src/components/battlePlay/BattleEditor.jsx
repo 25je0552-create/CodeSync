@@ -7,20 +7,11 @@ const ALL_LANGUAGES = [
   { value: "javascript", label: "JavaScript", monacoLanguage: "javascript" },
   { value: "python", label: "Python", monacoLanguage: "python" },
   { value: "cpp", label: "C++", monacoLanguage: "cpp" },
-  // Monaco's bundled basic-languages don't include a separate C tokenizer —
-  // "cpp" highlighting is the closest available stand-in for C syntax.
   { value: "c", label: "C", monacoLanguage: "cpp" },
   { value: "java", label: "Java", monacoLanguage: "java" },
   { value: "typescript", label: "TypeScript", monacoLanguage: "typescript" },
 ];
 
-// allowedLanguages: array of language values (e.g. ["cpp", "python"])
-// chosen by the host in battle settings. Participants can only pick
-// among these — the dropdown never shows anything outside this set.
-//
-// code/language are now controlled by the parent (BattlePlay) so that
-// BottomToolbar and BattleTerminal can read the same values — this
-// component just displays and edits them via setCode/setLanguage.
 function BattleEditor({
   code,
   setCode,
@@ -28,11 +19,8 @@ function BattleEditor({
   setLanguage,
   allowedLanguages,
 }) {
-
   const languageOptions = useMemo(() => {
     if (!allowedLanguages || allowedLanguages.length === 0) {
-      // Battle settings haven't loaded yet — show everything rather
-      // than an empty dropdown, then narrow down once they arrive.
       return ALL_LANGUAGES;
     }
     return ALL_LANGUAGES.filter((lang) =>
@@ -44,9 +32,6 @@ function BattleEditor({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // If the currently selected language ever falls outside the allowed
-  // set (settings just loaded, or the host changed them), snap to the
-  // first allowed language instead of leaving an invalid selection.
   useEffect(() => {
     const isStillAllowed = languageOptions.some(
       (lang) => lang.value === language
@@ -74,53 +59,46 @@ function BattleEditor({
   };
 
   return (
-
     <div
       className={`
-        bg-[#1a1a1a]
-        rounded-2xl
+        bg-[#141414]
         border
-        border-slate-800
-        shadow-lg
+        border-[#262626]
+        rounded-none
         overflow-hidden
         flex
         flex-col
-        ${isFullscreen ? "fixed inset-4 z-50" : "relative"}
+        ${isFullscreen ? "fixed inset-4 z-50 bg-[#000000]" : "relative"}
       `}
     >
-
       {/* TOP BAR */}
-      <div className="bg-[#1e1e1e] border-b border-slate-800 px-4 py-2.5 flex items-center justify-between gap-3">
-
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400" />
-          <span className="text-slate-200 font-semibold text-sm">
-            Battle Editor
+      <div className="bg-[#0d0d0d] border-b border-[#262626] px-4 py-2.5 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <span className="w-2 h-2 rounded-full bg-white" />
+          <span className="font-bugatti-mono text-xs uppercase tracking-[2px] text-white">
+            BATTLE EDITOR // {currentLanguage?.label}
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
-
-          {/* Language select — only shows languages the host allowed */}
+        <div className="flex items-center gap-3 font-bugatti-mono">
           <select
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
             disabled={languageOptions.length === 0}
             className="
-              bg-[#2a2a2a]
-              text-slate-200
+              bg-[#000000]
+              text-white
               text-xs
-              font-medium
+              uppercase
+              tracking-[1.5px]
               border
-              border-slate-700
-              rounded-lg
-              px-2.5
-              py-1.5
+              border-[#262626]
+              focus:border-white
+              px-3
+              py-1
               outline-none
-              hover:border-slate-600
+              rounded-none
               cursor-pointer
-              disabled:opacity-50
-              disabled:cursor-not-allowed
             "
           >
             {languageOptions.map((lang) => (
@@ -130,62 +108,51 @@ function BattleEditor({
             ))}
           </select>
 
-          <div className="w-px h-5 bg-slate-800" />
+          <div className="w-px h-4 bg-[#262626]" />
 
-          {/* Font size */}
-          <div className="flex items-center gap-1 bg-[#2a2a2a] border border-slate-700 rounded-lg px-1">
+          <div className="flex items-center gap-1 bg-[#000000] border border-[#262626] px-1 text-xs">
             <button
               onClick={() => setFontSize((s) => Math.max(12, s - 1))}
-              className="text-slate-400 hover:text-white w-6 h-7 flex items-center justify-center text-xs font-bold"
-              title="Decrease font size"
+              className="text-[#999999] hover:text-white w-6 h-6 flex items-center justify-center cursor-pointer"
             >
               A−
             </button>
-            <span className="text-[11px] text-slate-500 w-6 text-center">
-              {fontSize}
-            </span>
+            <span className="text-[#666666] w-6 text-center">{fontSize}</span>
             <button
               onClick={() => setFontSize((s) => Math.min(24, s + 1))}
-              className="text-slate-400 hover:text-white w-6 h-7 flex items-center justify-center text-xs font-bold"
-              title="Increase font size"
+              className="text-[#999999] hover:text-white w-6 h-6 flex items-center justify-center cursor-pointer"
             >
               A+
             </button>
           </div>
 
-          <div className="w-px h-5 bg-slate-800" />
+          <div className="w-px h-4 bg-[#262626]" />
 
           <button
             onClick={handleReset}
-            title="Reset to starter code"
-            className="text-slate-400 hover:text-white w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[#2a2a2a] transition"
+            className="text-[#999999] hover:text-white text-xs uppercase tracking-[1px] px-2 py-1 border border-[#262626] cursor-pointer"
           >
-            ⟳
+            RESET
           </button>
 
           <button
             onClick={handleCopy}
-            title="Copy code"
-            className="text-slate-400 hover:text-white w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[#2a2a2a] transition"
+            className="text-[#999999] hover:text-white text-xs uppercase tracking-[1px] px-2 py-1 border border-[#262626] cursor-pointer"
           >
-            {copied ? "✓" : "⧉"}
+            {copied ? "COPIED" : "COPY"}
           </button>
 
           <button
             onClick={() => setIsFullscreen((f) => !f)}
-            title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
-            className="text-slate-400 hover:text-white w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[#2a2a2a] transition"
+            className="text-[#999999] hover:text-white text-xs uppercase tracking-[1px] px-2 py-1 border border-[#262626] cursor-pointer"
           >
-            {isFullscreen ? "⤢" : "⛶"}
+            {isFullscreen ? "EXIT" : "EXPAND"}
           </button>
-
         </div>
-
       </div>
 
       {/* EDITOR */}
-      <div className="flex-1 min-h-[500px]">
-
+      <div className="flex-1 min-h-[480px]">
         <Editor
           height="100%"
           language={currentLanguage?.monacoLanguage || language}
@@ -195,42 +162,23 @@ function BattleEditor({
           options={{
             fontSize,
             lineHeight: fontSize * 1.6,
-
-            minimap: {
-              enabled: false,
-            },
-
-            fontFamily:
-              "'Cascadia Code', Consolas, monospace",
-
+            minimap: { enabled: false },
+            fontFamily: "'JetBrains Mono', monospace",
             automaticLayout: true,
-
             cursorBlinking: "blink",
-
-            padding: {
-              top: 20,
-            },
-
+            padding: { top: 16 },
             scrollBeyondLastLine: false,
-
-            renderLineHighlight: "gutter",
           }}
         />
-
       </div>
 
       {/* STATUS BAR */}
-      <div className="bg-[#1e1e1e] border-t border-slate-800 px-4 py-1.5 flex items-center justify-between text-[11px] text-slate-500">
-        <span>
-          {currentLanguage?.label}
-        </span>
-        <span>{lineCount} {lineCount === 1 ? "line" : "lines"}</span>
+      <div className="bg-[#0d0d0d] border-t border-[#262626] px-4 py-1.5 flex items-center justify-between font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666]">
+        <span>LANG // {currentLanguage?.label}</span>
+        <span>LINES // {lineCount}</span>
       </div>
-
     </div>
-
   );
-
 }
 
 export default BattleEditor;

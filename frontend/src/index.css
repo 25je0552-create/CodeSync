@@ -1,11 +1,173 @@
 @import "tailwindcss";
 
+@theme {
+  --font-display: "Saira Condensed", sans-serif;
+  --font-serif-body: "Cormorant Garamond", Garamond, serif;
+  --font-mono-bugatti: "JetBrains Mono", ui-monospace, monospace;
+
+  --color-bugatti-canvas: #000000;
+  --color-bugatti-surface-soft: #0d0d0d;
+  --color-bugatti-surface-card: #141414;
+  --color-bugatti-surface-elevated: #1f1f1f;
+  --color-bugatti-hairline: #262626;
+  --color-bugatti-hairline-strong: #3a3a3a;
+  --color-bugatti-primary: #ffffff;
+  --color-bugatti-body: #cccccc;
+  --color-bugatti-body-strong: #e6e6e6;
+  --color-bugatti-muted: #999999;
+  --color-bugatti-muted-soft: #666666;
+  --color-bugatti-link: #c3d9f3;
+  --color-bugatti-warning: #d4a017;
+  --color-bugatti-success: #5fa657;
+}
+
 * {
-  font-family: 'Outfit', sans-serif;
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  background: #F7F3EE;
-  color: #111827;
+  background-color: #000000;
+  color: #ffffff;
+  font-family: "Cormorant Garamond", Garamond, serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Bugatti Typography Utility Classes per DESIGN.md */
+.font-bugatti-display {
+  font-family: "Saira Condensed", sans-serif;
+  text-transform: uppercase;
+}
+
+.font-bugatti-serif {
+  font-family: "Cormorant Garamond", Garamond, serif;
+}
+
+.font-bugatti-mono {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* Components per DESIGN.md */
+.bugatti-wordmark {
+  font-family: "Saira Condensed", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.bugatti-button-primary {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  background-color: transparent;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 9999px;
+  padding: 14px 32px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.bugatti-button-primary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
+}
+
+.bugatti-button-secondary {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  background-color: transparent;
+  color: #999999;
+  border: 1px solid #262626;
+  border-radius: 9999px;
+  padding: 14px 32px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.bugatti-button-secondary:hover {
+  color: #ffffff;
+  border-color: #3a3a3a;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.bugatti-button-icon {
+  background-color: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 9999px;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.bugatti-button-icon:hover {
+  border-color: #ffffff;
+}
+
+.bugatti-input {
+  background-color: transparent;
+  color: #ffffff;
+  font-family: "Cormorant Garamond", Garamond, serif;
+  font-size: 16px;
+  border: none;
+  border-bottom: 1px solid #3a3a3a;
+  border-radius: 0;
+  padding: 12px 0;
+  height: 44px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s ease;
+}
+
+.bugatti-input:focus {
+  border-bottom-color: #ffffff;
+}
+
+.bugatti-input::placeholder {
+  color: #666666;
+}
+
+.bugatti-card {
+  background-color: #141414;
+  border: 1px solid #262626;
+  border-radius: 0px;
+}
+
+.bugatti-link {
+  color: #c3d9f3;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: opacity 0.2s ease;
+  text-decoration: none;
+}
+
+.bugatti-link:hover {
+  text-decoration: underline;
 }

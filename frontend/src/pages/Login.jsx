@@ -7,12 +7,9 @@ import { Link, useNavigate } from "react-router-dom";
 function Login() {
   const navigate = useNavigate();
 
-  const [showPassword, setShowPassword] =
-    useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
-  const [password, setPassword] =
-    useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -33,219 +30,163 @@ function Login() {
     }
 
     try {
-      toast.loading("Logging in...", {
-        id: "login",
-      });
+      toast.loading("Logging in...", { id: "login" });
 
       const res = await axios.post(
-  "http://localhost:5000/api/auth/login",
-  {
-    email,
-    password,
-  },
-  {
-    withCredentials: true,
-  }
-);
-
-localStorage.setItem(
-  "userId",
-  res.data.user.id
-);
-
-localStorage.setItem(
-  "username",
-  res.data.user.username
-);
-
-toast.success(
-  "Login successful",
-  {
-    id: "login",
-  }
-);
-
-navigate("/home");
-
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message ||
-          "Login failed",
-        {
-          id: "login",
-        }
+        "http://localhost:5000/api/auth/login",
+        { email, password },
+        { withCredentials: true }
       );
+
+      localStorage.setItem("userId", res.data.user.id);
+      localStorage.setItem("username", res.data.user.username);
+
+      toast.success("Login successful", { id: "login" });
+      navigate("/home");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Login failed", {
+        id: "login",
+      });
     }
   };
 
   const handleGoogleLogin = () => {
-  window.location.href =
-    "http://localhost:5000/api/auth/google";
-};
+    window.location.href = "http://localhost:5000/api/auth/google";
+  };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc]">
-      <div className="max-w-7xl mx-auto px-6">
+    <div className="min-h-screen bg-[#000000] text-white flex flex-col justify-between selection:bg-white selection:text-black">
+      {/* TOP WORDMARK NAV */}
+      <header className="h-14 border-b border-[#262626] flex items-center justify-between px-8">
+        <div className="bugatti-wordmark">CODESYNC</div>
+        <div className="font-bugatti-mono text-[11px] uppercase tracking-[2px] text-[#999999]">
+          01 // ACCESS
+        </div>
+      </header>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center min-h-screen">
-
-          {/* Left Side */}
-
-          <div>
-            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-600 px-4 py-2 rounded-full font-medium mb-6">
-              🚀 Welcome Back
+      {/* MAIN LAYOUT */}
+      <main className="max-w-7xl w-full mx-auto px-8 py-12 flex-1 flex items-center">
+        <div className="grid lg:grid-cols-12 gap-16 items-center w-full">
+          {/* Left Side — Bugatti Editorial Hero */}
+          <div className="lg:col-span-7 space-y-8">
+            <div className="inline-block border border-[#262626] bg-[#0d0d0d] px-4 py-1.5 font-bugatti-mono text-[11px] uppercase tracking-[2px] text-[#cccccc]">
+              REFINED REALTIME PLATFORM
             </div>
 
-            <h1 className="text-6xl font-bold text-slate-900 leading-tight">
-              Collaborative
+            <h1 className="font-bugatti-display text-5xl sm:text-7xl font-normal leading-[1.05] tracking-[3px] text-white uppercase">
+              ARCHITECTURAL
               <br />
-              Coding Made
+              COLLABORATION
               <br />
-              Simple.
+              ENGINEERED.
             </h1>
 
-            <p className="mt-6 text-xl text-slate-600">
-              Create rooms, invite teammates,
-              write code together in real-time
-              and execute instantly.
+            <p className="font-bugatti-serif text-xl sm:text-2xl text-[#cccccc] max-w-xl leading-relaxed">
+              Create synchronized rooms, invite peers, inspect execution, and craft software within a hyper-minimalist European interface.
             </p>
 
-            <div className="flex flex-wrap gap-4 mt-8">
-              <div className="bg-white border px-5 py-3 rounded-xl">
-                ⚡ Realtime Sync
+            {/* Feature Tokens */}
+            <div className="grid grid-cols-3 gap-4 pt-4 max-w-lg">
+              <div className="bg-[#141414] border border-[#262626] p-4 rounded-none">
+                <span className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#999999] block mb-1">01 / CAPABILITY</span>
+                <span className="font-bugatti-mono text-xs uppercase tracking-[1.5px] text-white">REALTIME SYNC</span>
               </div>
-
-              <div className="bg-white border px-5 py-3 rounded-xl">
-                👥 Team Rooms
+              <div className="bg-[#141414] border border-[#262626] p-4 rounded-none">
+                <span className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#999999] block mb-1">02 / WORKSPACE</span>
+                <span className="font-bugatti-mono text-xs uppercase tracking-[1.5px] text-white">TEAM ROOMS</span>
               </div>
-
-              <div className="bg-white border px-5 py-3 rounded-xl">
-                ▶️ Code Runner
+              <div className="bg-[#141414] border border-[#262626] p-4 rounded-none">
+                <span className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#999999] block mb-1">03 / ENGINE</span>
+                <span className="font-bugatti-mono text-xs uppercase tracking-[1.5px] text-white">CODE RUNNER</span>
               </div>
             </div>
           </div>
 
-          {/* Right Side */}
-
-          <div className="flex justify-center">
-
-            <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
-
-              <div className="text-center mb-8">
-                <h1 className="text-5xl font-extrabold">
-                  <span className="text-slate-900">
-                    Code
-                  </span>
-
-                  <span className="text-blue-600">
-                    Sync
-                  </span>
-                </h1>
-
-                <p className="text-slate-500 mt-2">
-                  Welcome Back
+          {/* Right Side — Bugatti Card Form */}
+          <div className="lg:col-span-5 flex justify-center">
+            <div className="w-full max-w-md bg-[#141414] border border-[#262626] rounded-none p-8 sm:p-10 shadow-2xl">
+              <div className="mb-8 text-center border-b border-[#262626] pb-6">
+                <h2 className="font-bugatti-display text-3xl tracking-[4px] text-white uppercase">
+                  CODESYNC
+                </h2>
+                <p className="font-bugatti-mono text-[11px] uppercase tracking-[2px] text-[#999999] mt-2">
+                  AUTHENTICATION PORTAL
                 </p>
               </div>
 
-              <form
-                onSubmit={handleLogin}
-                className="space-y-4"
-              >
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) =>
-                    setEmail(e.target.value)
-                  }
-                  className="w-full border border-slate-300 rounded-xl p-4"
-                />
+              <form onSubmit={handleLogin} className="space-y-6">
+                <div>
+                  <label className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#999999] block mb-1">
+                    EMAIL ADDRESS
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="name@domain.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bugatti-input"
+                  />
+                </div>
 
                 <div className="relative">
+                  <label className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#999999] block mb-1">
+                    PASSWORD
+                  </label>
                   <input
-                    type={
-                      showPassword
-                        ? "text"
-                        : "password"
-                    }
-                    placeholder="Password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
                     value={password}
-                    onChange={(e) =>
-                      setPassword(
-                        e.target.value
-                      )
-                    }
-                    className="w-full border border-slate-300 rounded-xl p-4"
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="bugatti-input pr-10"
                   />
-
                   <button
                     type="button"
-                    className="absolute right-4 top-5 text-slate-500"
-                    onClick={() =>
-                      setShowPassword(
-                        !showPassword
-                      )
-                    }
+                    className="absolute right-0 bottom-3 text-[#666666] hover:text-white transition-colors"
+                    onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? (
-                      <FaEyeSlash />
-                    ) : (
-                      <FaEye />
-                    )}
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-4 font-semibold"
-                >
-                  Login
+                <button type="submit" className="bugatti-button-primary w-full mt-4">
+                  LOGIN
                 </button>
               </form>
 
               <div className="flex items-center my-6">
-                <div className="flex-1 border-t"></div>
-
-                <span className="px-3 text-slate-400 text-sm">
-                  OR CONTINUE WITH
+                <div className="flex-1 border-t border-[#262626]"></div>
+                <span className="px-4 font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666]">
+                  OR
                 </span>
-
-                <div className="flex-1 border-t"></div>
+                <div className="flex-1 border-t border-[#262626]"></div>
               </div>
 
               <button
-  type="button"
-  onClick={() => {
-    window.location.href =
-      "http://localhost:5000/api/auth/google";
-  }}
-  className="w-full border border-slate-300 rounded-xl py-4 font-medium hover:bg-slate-50"
->
-  Continue with Google
-</button>
-
-              <Link
-                to="/forgot-password"
-                className="block text-center mt-5 text-blue-600"
+                type="button"
+                onClick={handleGoogleLogin}
+                className="bugatti-button-secondary w-full"
               >
-                Forgot Password?
-              </Link>
+                CONTINUE WITH GOOGLE
+              </button>
 
-              <p className="text-center mt-5 text-slate-500">
-                Don't have an account?
-
-                <Link
-                  to="/signup"
-                  className="ml-2 text-blue-600 font-semibold"
-                >
-                  Sign Up
+              <div className="mt-8 pt-6 border-t border-[#262626] flex items-center justify-between text-xs">
+                <Link to="/forgot-password" className="bugatti-link">
+                  FORGOT PASSWORD?
                 </Link>
-              </p>
-
+                <Link to="/signup" className="bugatti-link">
+                  CREATE ACCOUNT →
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </main>
+
+      {/* FOOTER */}
+      <footer className="h-16 border-t border-[#262626] flex items-center justify-between px-8 text-[#666666] font-bugatti-mono text-[11px] tracking-[2px] uppercase">
+        <div>© CODESYNC AUTOMOTIVE LUXURY UI</div>
+        <div>ALL RIGHTS RESERVED</div>
+      </footer>
     </div>
   );
 }

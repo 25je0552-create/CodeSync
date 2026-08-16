@@ -8,35 +8,20 @@ function Home() {
 
   const [roomId, setRoomId] = useState("");
   const [username, setUsername] = useState("");
-  const storedUser =
-  localStorage.getItem("username");
+  const storedUser = localStorage.getItem("username");
 
-  // Which screen is showing: the "choose your experience" landing,
-  // or the existing join/create workspace UI. Purely a UI-layer switch —
-  // none of the room/auth logic below was touched.
   const [view, setView] = useState("select"); // "select" | "workspace"
 
   const createRoom = async () => {
-    const newRoomId = Math.random()
-      .toString(36)
-      .substring(2, 8);
-
+    const newRoomId = Math.random().toString(36).substring(2, 8);
     setRoomId(newRoomId);
-
-    await navigator.clipboard.writeText(
-      newRoomId
-    );
-
-    toast.success(
-      "Room ID copied to clipboard!"
-    );
+    await navigator.clipboard.writeText(newRoomId);
+    toast.success("Room ID copied to clipboard!");
   };
 
   const joinRoom = () => {
     if (!roomId || !username) {
-      toast.error(
-        "Enter username and room ID"
-      );
+      toast.error("Enter username and room ID");
       return;
     }
 
@@ -47,528 +32,222 @@ function Home() {
     });
   };
 
- const logoutUser = async () => {
-  try {
-
-    await axios.post(
-      "http://localhost:5000/api/auth/logout",
-      {},
-      {
-        withCredentials: true,
-      }
-    );
-
-    localStorage.removeItem(
-      "username"
-    );
-
-    toast.success(
-      "Logged out successfully"
-    );
-
-    navigate("/login");
-
-  } catch (error) {
-
-    toast.error(
-      "Logout failed"
-    );
-
-  }
-};
-
+  const logoutUser = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/api/auth/logout",
+        {},
+        { withCredentials: true }
+      );
+      localStorage.removeItem("username");
+      toast.success("Logged out successfully");
+      navigate("/login");
+    } catch {
+      toast.error("Logout failed");
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#F6F8FB]">
-
-      {/* Navbar */}
-      <nav className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-6 sm:px-10">
-
-        <div className="flex items-center gap-3">
+    <div className="min-h-screen bg-[#000000] text-white flex flex-col justify-between selection:bg-white selection:text-black">
+      {/* NAVBAR */}
+      <nav className="h-16 bg-[#000000] border-b border-[#262626] flex items-center justify-between px-6 sm:px-10">
+        <div className="flex items-center gap-6">
           {view === "workspace" && (
             <button
               onClick={() => setView("select")}
-              className="
-              flex
-              items-center
-              gap-1
-              text-slate-400
-              hover:text-slate-700
-              transition
-              text-sm
-              font-medium
-              mr-2
-              "
+              className="font-bugatti-mono text-xs uppercase tracking-[2px] text-[#999999] hover:text-white transition-colors flex items-center gap-2 cursor-pointer"
             >
-              <span aria-hidden>←</span> Back
+              ← BACK
             </button>
           )}
-
-          <h1 className="text-3xl font-bold leading-none">
-            <span className="text-slate-900">
-              Code
-            </span>
-            <span className="text-blue-600">
-              Sync
-            </span>
-          </h1>
+          <div className="bugatti-wordmark">CODESYNC</div>
         </div>
 
-        <div className="flex items-center gap-3 sm:gap-4">
-
-          <span className="hidden lg:inline text-sm text-slate-500 mr-2">
-            Realtime Collaborative Development
+        <div className="flex items-center gap-6">
+          <span className="hidden lg:inline font-bugatti-mono text-[11px] uppercase tracking-[2px] text-[#666666]">
+            REALTIME COLLABORATIVE PLATFORM
           </span>
 
-          <div className="hidden sm:block w-px h-6 bg-slate-200" />
+          <div className="hidden sm:block w-px h-4 bg-[#262626]" />
 
-          <div
-            className="
-            flex
-            items-center
-            gap-2
-            bg-slate-100
-            px-4
-            py-2
-            rounded-xl
-            font-medium
-            text-sm
-            "
-          >
-            <span aria-hidden>👤</span> {storedUser}
+          <div className="font-bugatti-mono text-xs uppercase tracking-[1.5px] text-[#e6e6e6] bg-[#141414] border border-[#262626] px-3.5 py-1.5 rounded-none">
+            USER // {storedUser || "GUEST"}
           </div>
 
           <button
             onClick={logoutUser}
-            className="
-            bg-red-500
-            hover:bg-red-600
-            text-white
-            px-5
-            py-2
-            rounded-xl
-            font-medium
-            text-sm
-            transition
-            "
+            className="font-bugatti-mono text-xs uppercase tracking-[2px] text-[#999999] hover:text-white border border-[#262626] hover:border-white px-4 py-1.5 rounded-full transition-colors cursor-pointer"
           >
-            Logout
+            LOGOUT
           </button>
-
         </div>
-
       </nav>
 
+      {/* BODY CONTENT */}
       {view === "select" ? (
-
-        /* Choose Your Coding Experience */
-        <div className="min-h-[calc(100vh-5rem)] flex items-center">
-          <div className="max-w-5xl w-full mx-auto px-6 sm:px-10 py-16">
-
-            <div className="text-center mb-12 sm:mb-14 max-w-2xl mx-auto">
-
-              <div
-                className="
-                inline-flex
-                items-center
-                gap-2
-                bg-blue-50
-                text-blue-700
-                px-4
-                py-2
-                rounded-full
-                text-sm
-                font-medium
-                mb-6
-                "
-              >
-                🚀 Build Together
+        <main className="flex-1 flex items-center justify-center py-16 px-6 sm:px-10">
+          <div className="max-w-5xl w-full mx-auto">
+            <div className="text-center mb-16 max-w-2xl mx-auto space-y-4">
+              <div className="inline-block border border-[#262626] bg-[#0d0d0d] px-4 py-1.5 font-bugatti-mono text-[11px] uppercase tracking-[2px] text-[#cccccc]">
+                SELECT ARCHITECTURE MODE
               </div>
 
-              <h1
-                className="
-                text-4xl
-                sm:text-5xl
-                font-bold
-                leading-tight
-                text-slate-900
-                "
-              >
-                Choose Your Coding Experience
+              <h1 className="font-bugatti-display text-4xl sm:text-6xl tracking-[3px] text-white uppercase">
+                CHOOSE YOUR EXPERIENCE
               </h1>
 
-              <p className="mt-4 text-lg text-slate-600">
-                Collaborate on real projects, or test your skills head-to-head.
+              <p className="font-bugatti-serif text-xl text-[#cccccc]">
+                Collaborate on live synchronised codebases or compete head-to-head in the arena.
               </p>
-
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-6 sm:gap-8">
-
-            {/* Collaboration Workspace */}
-            <button
-              onClick={() => setView("workspace")}
-              className="
-              group
-              flex
-              flex-col
-              items-start
-              text-left
-              h-full
-              bg-white
-              border
-              border-slate-200
-              rounded-3xl
-              p-8
-              shadow-sm
-              hover:border-blue-400
-              hover:shadow-md
-              transition
-              "
-            >
-              <div
-                className="
-                w-14
-                h-14
-                shrink-0
-                rounded-2xl
-                bg-blue-50
-                text-blue-600
-                flex
-                items-center
-                justify-center
-                text-2xl
-                mb-6
-                "
+            <div className="grid sm:grid-cols-2 gap-8">
+              {/* Card 1: Collaboration Workspace */}
+              <button
+                onClick={() => setView("workspace")}
+                className="group text-left bg-[#141414] border border-[#262626] hover:border-white p-8 sm:p-10 transition-all duration-300 flex flex-col justify-between cursor-pointer rounded-none"
               >
-                👥
-              </div>
+                <div>
+                  <div className="font-bugatti-mono text-xs uppercase tracking-[2px] text-[#666666] mb-6">
+                    MODE 01 // SYNCHRONIZED
+                  </div>
+                  <h2 className="font-bugatti-display text-3xl tracking-[2px] text-white uppercase mb-4">
+                    COLLABORATION WORKSPACE
+                  </h2>
+                  <p className="font-bugatti-serif text-lg text-[#cccccc] leading-relaxed mb-8">
+                    Build projects together in real time with shared state, live Monaco editing, and execution terminal.
+                  </p>
+                </div>
 
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                Collaboration Workspace
-              </h2>
+                <div className="pt-6 border-t border-[#262626] group-hover:border-white/40 flex items-center justify-between font-bugatti-mono text-xs uppercase tracking-[2.5px] text-white transition-colors">
+                  <span>ENTER WORKSPACE</span>
+                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+              </button>
 
-              <p className="text-slate-600 mb-8">
-                Build projects together in real time. Share code instantly
-                with teammates.
-              </p>
-
-              <span
-                className="
-                mt-auto
-                inline-flex
-                items-center
-                gap-2
-                text-blue-600
-                font-semibold
-                group-hover:gap-3
-                transition-all
-                "
+              {/* Card 2: Battle Arena */}
+              <button
+                onClick={() => navigate("/battle")}
+                className="group text-left bg-[#141414] border border-[#262626] hover:border-white p-8 sm:p-10 transition-all duration-300 flex flex-col justify-between cursor-pointer rounded-none"
               >
-                Enter Workspace <span aria-hidden>→</span>
-              </span>
-            </button>
+                <div>
+                  <div className="font-bugatti-mono text-xs uppercase tracking-[2px] text-[#666666] mb-6">
+                    MODE 02 // ARENA
+                  </div>
+                  <h2 className="font-bugatti-display text-3xl tracking-[2px] text-white uppercase mb-4">
+                    BATTLE ARENA
+                  </h2>
+                  <p className="font-bugatti-serif text-lg text-[#cccccc] leading-relaxed mb-8">
+                    Compete in structured algorithmic duels with live scoreboards, custom timers, and multi-language support.
+                  </p>
+                </div>
 
-            {/* Battle Arena */}
-            <button
-              onClick={() => navigate("/battle")}
-              className="
-              group
-              flex
-              flex-col
-              items-start
-              text-left
-              h-full
-              bg-white
-              border
-              border-slate-200
-              rounded-3xl
-              p-8
-              shadow-sm
-              hover:border-slate-900
-              hover:shadow-md
-              transition
-              "
-            >
-              <div
-                className="
-                w-14
-                h-14
-                shrink-0
-                rounded-2xl
-                bg-slate-100
-                text-slate-900
-                flex
-                items-center
-                justify-center
-                text-2xl
-                mb-6
-                "
-              >
-                ⚔️
-              </div>
-
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                Battle Arena
-              </h2>
-
-              <p className="text-slate-600 mb-8">
-                Compete in coding duels. Live leaderboard, AI review.
-              </p>
-
-              <span
-                className="
-                mt-auto
-                inline-flex
-                items-center
-                gap-2
-                text-slate-900
-                font-semibold
-                group-hover:gap-3
-                transition-all
-                "
-              >
-                Start Battle <span aria-hidden>→</span>
-              </span>
-            </button>
-
+                <div className="pt-6 border-t border-[#262626] group-hover:border-white/40 flex items-center justify-between font-bugatti-mono text-xs uppercase tracking-[2.5px] text-white transition-colors">
+                  <span>START BATTLE</span>
+                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+              </button>
             </div>
-
           </div>
-        </div>
-
+        </main>
       ) : (
+        <main className="flex-1 flex items-center justify-center py-16 px-6 sm:px-10">
+          <div className="max-w-7xl w-full mx-auto">
+            <div className="grid lg:grid-cols-12 gap-16 items-center">
+              {/* Left Side */}
+              <div className="lg:col-span-7 space-y-8">
+                <div className="inline-block border border-[#262626] bg-[#0d0d0d] px-4 py-1.5 font-bugatti-mono text-[11px] uppercase tracking-[2px] text-[#cccccc]">
+                  COLLABORATIVE ENGINE
+                </div>
 
-        /* Hero Section — existing join/create room UI, unchanged */
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 py-16 sm:py-20">
+                <h1 className="font-bugatti-display text-5xl sm:text-7xl font-normal leading-[1.05] tracking-[3px] text-white uppercase">
+                  COLLABORATIVE
+                  <br />
+                  CODING MADE
+                  <br />
+                  SIMPLE.
+                </h1>
 
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+                <p className="font-bugatti-serif text-xl sm:text-2xl text-[#cccccc] max-w-xl leading-relaxed">
+                  Create room keys, invite teammates, co-edit code instantly, and execute program output within the unified interface.
+                </p>
 
-            {/* Left Side */}
-            <div>
-
-              <div
-                className="
-                inline-flex
-                items-center
-                gap-2
-                bg-blue-50
-                text-blue-700
-                px-4
-                py-2
-                rounded-full
-                text-sm
-                font-medium
-                mb-6
-                "
-              >
-                🚀 Build Together
+                <div className="grid grid-cols-3 gap-4 pt-4 max-w-lg">
+                  <div className="bg-[#141414] border border-[#262626] p-4 rounded-none">
+                    <span className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#999999] block mb-1">CAPABILITY</span>
+                    <span className="font-bugatti-mono text-xs uppercase tracking-[1.5px] text-white">REALTIME SYNC</span>
+                  </div>
+                  <div className="bg-[#141414] border border-[#262626] p-4 rounded-none">
+                    <span className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#999999] block mb-1">CAPABILITY</span>
+                    <span className="font-bugatti-mono text-xs uppercase tracking-[1.5px] text-white">TEAM ROOMS</span>
+                  </div>
+                  <div className="bg-[#141414] border border-[#262626] p-4 rounded-none">
+                    <span className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#999999] block mb-1">CAPABILITY</span>
+                    <span className="font-bugatti-mono text-xs uppercase tracking-[1.5px] text-white">RUNNER ENGINE</span>
+                  </div>
+                </div>
               </div>
 
-              <h1
-                className="
-                text-6xl
-                font-bold
-                leading-tight
-                text-slate-900
-                "
-              >
-                Collaborative
-                <br />
-                Coding Made
-                <br />
-                Simple.
-              </h1>
+              {/* Right Side */}
+              <div className="lg:col-span-5">
+                <div className="bg-[#141414] border border-[#262626] p-8 sm:p-10 rounded-none shadow-2xl">
+                  <div className="mb-8 border-b border-[#262626] pb-6">
+                    <h2 className="font-bugatti-display text-3xl tracking-[3px] text-white uppercase">
+                      JOIN WORKSPACE
+                    </h2>
+                    <p className="font-bugatti-mono text-[11px] uppercase tracking-[2px] text-[#999999] mt-2">
+                      SPECIFY USERNAME AND ROOM KEY
+                    </p>
+                  </div>
 
-              <p
-                className="
-                mt-6
-                text-xl
-                text-slate-600
-                max-w-xl
-                "
-              >
-                Create rooms, invite
-                teammates, write code
-                together in real-time
-                and execute instantly.
-              </p>
+                  <div className="space-y-6 mb-8">
+                    <div>
+                      <label className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#999999] block mb-1">
+                        USERNAME
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. alex"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="bugatti-input"
+                      />
+                    </div>
 
-              <div className="flex flex-wrap gap-4 mt-8">
+                    <div>
+                      <label className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#999999] block mb-1">
+                        ROOM ID
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. room-123"
+                        value={roomId}
+                        onChange={(e) => setRoomId(e.target.value)}
+                        className="bugatti-input"
+                      />
+                    </div>
+                  </div>
 
-                <div
-                  className="
-                  flex-1
-                  min-w-[9.5rem]
-                  bg-white
-                  border
-                  border-slate-200
-                  rounded-2xl
-                  px-5
-                  py-4
-                  text-center
-                  font-medium
-                  text-slate-700
-                  "
-                >
-                  ⚡ Realtime Sync
+                  <div className="grid grid-cols-2 gap-4">
+                    <button onClick={createRoom} className="bugatti-button-secondary text-center">
+                      CREATE ROOM
+                    </button>
+                    <button onClick={joinRoom} className="bugatti-button-primary text-center">
+                      JOIN ROOM
+                    </button>
+                  </div>
                 </div>
-
-                <div
-                  className="
-                  flex-1
-                  min-w-[9.5rem]
-                  bg-white
-                  border
-                  border-slate-200
-                  rounded-2xl
-                  px-5
-                  py-4
-                  text-center
-                  font-medium
-                  text-slate-700
-                  "
-                >
-                  👥 Team Rooms
-                </div>
-
-                <div
-                  className="
-                  flex-1
-                  min-w-[9.5rem]
-                  bg-white
-                  border
-                  border-slate-200
-                  rounded-2xl
-                  px-5
-                  py-4
-                  text-center
-                  font-medium
-                  text-slate-700
-                  "
-                >
-                  ▶ Code Runner
-                </div>
-
               </div>
-
             </div>
-
-            {/* Right Side */}
-            <div>
-
-              <div
-                className="
-                bg-white
-                rounded-3xl
-                border
-                border-slate-200
-                p-8
-                shadow-sm
-                "
-              >
-
-                <h2
-                  className="
-                  text-2xl
-                  font-bold
-                  text-slate-900
-                  mb-6
-                  "
-                >
-                  Join Workspace
-                </h2>
-
-                <input
-                  type="text"
-                  placeholder="Username"
-                  value={username}
-                  onChange={(e) =>
-                    setUsername(
-                      e.target.value
-                    )
-                  }
-                  className="
-                  w-full
-                  mb-4
-                  bg-slate-50
-                  border
-                  border-slate-200
-                  rounded-xl
-                  px-4
-                  py-4
-                  outline-none
-                  focus:border-blue-500
-                  "
-                />
-
-                <input
-                  type="text"
-                  placeholder="Room ID"
-                  value={roomId}
-                  onChange={(e) =>
-                    setRoomId(
-                      e.target.value
-                    )
-                  }
-                  className="
-                  w-full
-                  mb-6
-                  bg-slate-50
-                  border
-                  border-slate-200
-                  rounded-xl
-                  px-4
-                  py-4
-                  outline-none
-                  focus:border-blue-500
-                  "
-                />
-
-                <div className="grid grid-cols-2 gap-4">
-
-                  <button
-                    onClick={createRoom}
-                    className="
-                    bg-blue-600
-                    hover:bg-blue-700
-                    text-white
-                    py-4
-                    rounded-xl
-                    font-medium
-                    transition
-                    "
-                  >
-                    Create Room
-                  </button>
-
-                  <button
-                    onClick={joinRoom}
-                    className="
-                    bg-slate-900
-                    hover:bg-slate-800
-                    text-white
-                    py-4
-                    rounded-xl
-                    font-medium
-                    transition
-                    "
-                  >
-                    Join Room
-                  </button>
-
-                </div>
-
-              </div>
-
-            </div>
-
           </div>
-
-        </div>
-
+        </main>
       )}
 
+      {/* FOOTER */}
+      <footer className="h-16 border-t border-[#262626] flex items-center justify-between px-8 text-[#666666] font-bugatti-mono text-[11px] tracking-[2px] uppercase">
+        <div>© CODESYNC AUTOMOTIVE LUXURY UI</div>
+        <div>ALL RIGHTS RESERVED</div>
+      </footer>
     </div>
   );
 }

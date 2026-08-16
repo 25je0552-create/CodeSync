@@ -1,41 +1,16 @@
-function BattleNameInput({
-  battleName,
-  setBattleName,
-}) {
+function BattleNameInput({ battleName, setBattleName }) {
   return (
     <div>
-
-      <label
-        className="
-        block
-        text-sm
-        font-semibold
-        text-slate-700
-        mb-3
-        "
-      >
-        Battle Name
+      <label className="font-bugatti-mono text-[11px] uppercase tracking-[2px] text-[#666666] block mb-2">
+        BATTLE NAME
       </label>
-
       <input
         type="text"
         value={battleName}
-        onChange={(e) =>
-          setBattleName(e.target.value)
-        }
+        onChange={(e) => setBattleName(e.target.value)}
         placeholder="Enter battle name..."
-        className="
-        w-full
-        border
-        border-slate-300
-        rounded-xl
-        px-4
-        py-4
-        outline-none
-        focus:border-blue-600
-        "
+        className="bugatti-input"
       />
-
     </div>
   );
 }

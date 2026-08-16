@@ -14,9 +14,6 @@ function CreateBattleButton({
   const navigate = useNavigate();
 
   const handleCreateBattle = async () => {
-
-    // Validation
-
     if (!battleName.trim()) {
       toast.error("Enter a battle name.");
       return;
@@ -28,9 +25,7 @@ function CreateBattleButton({
     }
 
     try {
-
-      const host =
-        localStorage.getItem("username");
+      const host = localStorage.getItem("username");
 
       const response = await axios.post(
         "http://localhost:5000/api/battle/create",
@@ -48,45 +43,22 @@ function CreateBattleButton({
 
       toast.success("Battle Created!");
 
-      const { battleId, battle } =
-        response.data;
+      const { battleId, battle } = response.data;
 
-      navigate(
-        `/battle/lobby/${battleId}`,
-        {
-          state: battle,
-        }
-      );
-
+      navigate(`/battle/lobby/${battleId}`, {
+        state: battle,
+      });
     } catch (error) {
-
       console.error(error);
-
       toast.error(
-        error.response?.data?.message ||
-        "Failed to create battle."
+        error.response?.data?.message || "Failed to create battle."
       );
-
     }
-
   };
 
   return (
-    <button
-      onClick={handleCreateBattle}
-      className="
-      w-full
-      py-4
-      rounded-xl
-      bg-blue-600
-      hover:bg-blue-700
-      text-white
-      font-semibold
-      text-lg
-      transition
-      "
-    >
-      ⚔ Create Battle
+    <button onClick={handleCreateBattle} className="bugatti-button-primary w-full text-center">
+      CREATE BATTLE ARENA
     </button>
   );
 }

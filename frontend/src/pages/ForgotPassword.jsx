@@ -15,76 +15,71 @@ function ForgotPassword() {
     }
 
     try {
-      toast.loading("Sending reset link...", {
-        id: "forgot",
-      });
+      toast.loading("Sending reset link...", { id: "forgot" });
 
       const res = await axios.post(
         "http://localhost:5000/api/auth/forgot-password",
         { email }
       );
 
-      toast.success(res.data.message, {
-        id: "forgot",
-      });
-
+      toast.success(res.data.message, { id: "forgot" });
     } catch (error) {
       toast.error(
-        error.response?.data?.message ||
-          "Failed to send email",
-        {
-          id: "forgot",
-        }
+        error.response?.data?.message || "Failed to send email",
+        { id: "forgot" }
       );
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F6F8FB] flex items-center justify-center">
+    <div className="min-h-screen bg-[#000000] text-white flex flex-col justify-between selection:bg-white selection:text-black">
+      <header className="h-14 border-b border-[#262626] flex items-center justify-between px-8">
+        <div className="bugatti-wordmark">CODESYNC</div>
+        <div className="font-bugatti-mono text-[11px] uppercase tracking-[2px] text-[#999999]">
+          RECOVERY
+        </div>
+      </header>
 
-      <div className="bg-white w-[450px] rounded-3xl shadow-xl p-8">
+      <main className="flex-1 flex items-center justify-center px-6 py-12">
+        <div className="bg-[#141414] border border-[#262626] rounded-none p-8 sm:p-10 w-full max-w-md">
+          <h1 className="font-bugatti-display text-3xl tracking-[3px] text-center text-white uppercase">
+            RECOVER ACCESS
+          </h1>
+          <p className="font-bugatti-serif text-[#cccccc] text-center mt-3 text-lg">
+            Enter your registered email address to receive password recovery instructions.
+          </p>
 
-        <h1 className="text-3xl font-bold text-center">
-          Forgot Password
-        </h1>
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            <div>
+              <label className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#999999] block mb-1">
+                EMAIL ADDRESS
+              </label>
+              <input
+                type="email"
+                placeholder="name@domain.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bugatti-input"
+              />
+            </div>
 
-        <p className="text-slate-500 text-center mt-2">
-          Enter your email to receive a password reset link.
-        </p>
+            <button type="submit" className="bugatti-button-primary w-full">
+              SEND RESET LINK
+            </button>
+          </form>
 
-        <form
-          onSubmit={handleSubmit}
-          className="mt-8 space-y-4"
-        >
+          <div className="mt-8 pt-6 border-t border-[#262626] text-center">
+            <Link to="/login" className="bugatti-link">
+              ← RETURN TO LOGIN
+            </Link>
+          </div>
+        </div>
+      </main>
 
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
-            className="w-full border border-slate-300 rounded-xl p-4 outline-none"
-          />
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-4 font-semibold"
-          >
-            Send Reset Link
-          </button>
-
-        </form>
-
-        <Link
-          to="/login"
-          className="block text-center mt-6 text-blue-600"
-        >
-          Back to Login
-        </Link>
-
-      </div>
-
+      <footer className="h-16 border-t border-[#262626] flex items-center justify-between px-8 text-[#666666] font-bugatti-mono text-[11px] tracking-[2px] uppercase">
+        <div>© CODESYNC AUTOMOTIVE LUXURY UI</div>
+        <div>ALL RIGHTS RESERVED</div>
+      </footer>
     </div>
   );
 }
