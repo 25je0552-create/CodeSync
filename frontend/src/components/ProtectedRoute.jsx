@@ -3,24 +3,42 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 function ProtectedRoute({ children }) {
-  const [loading, setLoading] = useState(true);
-  const [authenticated, setAuthenticated] = useState(false);
+  const hasLocalUser = Boolean(
+    localStorage.getItem("username") || localStorage.getItem("userId")
+  );
+
+  const [loading, setLoading] = useState(!hasLocalUser);
+  const [authenticated, setAuthenticated] = useState(hasLocalUser);
 
   useEffect(() => {
+    let isMounted = true;
+
     const verifyUser = async () => {
       try {
         await axios.get("http://localhost:5000/api/auth/verify", {
           withCredentials: true,
         });
 
-        setAuthenticated(true);
+        if (isMounted) {
+          setAuthenticated(true);
+          setLoading(false);
+        }
       } catch {
-        setAuthenticated(false);
+        if (isMounted) {
+          // If neither cookie nor localStorage is valid, unauthenticate
+          if (!localStorage.getItem("username") && !localStorage.getItem("userId")) {
+            setAuthenticated(false);
+          }
+          setLoading(false);
+        }
       }
-      setLoading(false);
     };
 
     verifyUser();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (loading) {
@@ -31,7 +49,7 @@ function ProtectedRoute({ children }) {
     );
   }
 
-  return authenticated ? children : <Navigate to="/login" />;
+  return authenticated ? children : <Navigate to="/login" replace />;
 }
 
 export default ProtectedRoute;

@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import battleSocket from "../../socket/battleSocket";
 
 function LobbyControls({ battleId, battle, isHost }) {
+  const navigate = useNavigate();
   const username = localStorage.getItem("username");
   const [loading, setLoading] = useState(false);
 
@@ -38,6 +40,14 @@ function LobbyControls({ battleId, battle, isHost }) {
     toast.success("Starting Battle...");
   };
 
+  const handleLeaveArena = () => {
+    battleSocket.emit("leaveBattle", {
+      battleId,
+      username,
+    });
+    navigate("/battle");
+  };
+
   const startBlockedReason = !enoughPlayers
     ? "Waiting for at least 2 players"
     : !everyoneReady
@@ -45,10 +55,10 @@ function LobbyControls({ battleId, battle, isHost }) {
     : null;
 
   return (
-    <div className="bg-[#141414] border border-[#262626] p-6 space-y-6 rounded-none">
+    <div className="bg-[#141414] border border-[#262626] p-6 space-y-6 rounded-none font-bugatti-mono">
       {/* Battle ID */}
       <div>
-        <p className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666] mb-2">
+        <p className="text-[10px] uppercase tracking-[2px] text-[#666666] mb-2">
           BATTLE ID KEY
         </p>
 
@@ -57,7 +67,7 @@ function LobbyControls({ battleId, battle, isHost }) {
             navigator.clipboard.writeText(battleId);
             toast.success("Battle ID copied!");
           }}
-          className="w-full flex items-center justify-between bg-[#000000] border border-[#262626] hover:border-white px-4 py-3 font-bugatti-mono text-xs uppercase tracking-[1.5px] text-white transition-colors cursor-pointer"
+          className="w-full flex items-center justify-between bg-[#000000] border border-[#262626] hover:border-white px-4 py-3 text-xs uppercase tracking-[1.5px] text-white transition-colors cursor-pointer"
         >
           <span className="truncate">{battleId}</span>
           <span className="text-[#c3d9f3] shrink-0">COPY</span>
@@ -68,7 +78,7 @@ function LobbyControls({ battleId, battle, isHost }) {
 
       {/* Your Status */}
       <div>
-        <p className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666] mb-2">
+        <p className="text-[10px] uppercase tracking-[2px] text-[#666666] mb-2">
           PLAYER STATUS
         </p>
 
@@ -78,7 +88,6 @@ function LobbyControls({ battleId, battle, isHost }) {
           className={`
             w-full
             py-3
-            font-bugatti-mono
             text-xs
             uppercase
             tracking-[2.5px]
@@ -101,7 +110,10 @@ function LobbyControls({ battleId, battle, isHost }) {
             : "MARK READY"}
         </button>
 
-        <button className="mt-3 w-full bugatti-button-secondary py-2.5 text-xs text-center">
+        <button
+          onClick={handleLeaveArena}
+          className="mt-3 w-full bugatti-button-secondary py-2.5 text-xs text-center"
+        >
           LEAVE ARENA
         </button>
       </div>
@@ -112,7 +124,7 @@ function LobbyControls({ battleId, battle, isHost }) {
           <div className="h-px bg-[#262626]" />
 
           <div>
-            <p className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666] mb-2">
+            <p className="text-[10px] uppercase tracking-[2px] text-[#666666] mb-2">
               HOST CONTROLS
             </p>
 
@@ -122,7 +134,6 @@ function LobbyControls({ battleId, battle, isHost }) {
               className={`
                 w-full
                 py-3
-                font-bugatti-mono
                 text-xs
                 uppercase
                 tracking-[2.5px]
@@ -141,7 +152,7 @@ function LobbyControls({ battleId, battle, isHost }) {
             </button>
 
             {startBlockedReason && (
-              <p className="mt-3 font-bugatti-mono text-[10px] uppercase tracking-[1.5px] text-[#666666] text-center">
+              <p className="mt-3 text-[10px] uppercase tracking-[1.5px] text-[#666666] text-center">
                 {startBlockedReason}
               </p>
             )}

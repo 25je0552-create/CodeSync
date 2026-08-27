@@ -29,28 +29,27 @@ function CodeBlock({ label, value }) {
   );
 }
 
-function ProblemPanel() {
-  const problem = {
-    title: "Two Sum",
-    difficulty: "Easy",
-    description:
-      "Given an array of integers nums and an integer target, return the indices of the two numbers such that they add up to the target.",
-    constraints: [
-      "2 ≤ nums.length ≤ 10⁴",
-      "-10⁹ ≤ nums[i] ≤ 10⁹",
-      "Only one valid answer exists.",
-    ],
-    sampleInput: `nums = [2,7,11,15]\ntarget = 9`,
-    sampleOutput: `[0,1]`,
-  };
+function ProblemPanel({ problem }) {
+  if (!problem) {
+    return (
+      <div className="bg-[#141414] border border-[#262626] p-8 font-bugatti-mono text-xs text-[#999999] uppercase tracking-[2px]">
+        NO PROBLEM SELECTED
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#141414] border border-[#262626] rounded-none h-full flex flex-col overflow-hidden">
       {/* Header */}
       <div className="px-8 pt-6 pb-6 border-b border-[#262626] flex items-center justify-between shrink-0">
-        <h1 className="font-bugatti-display text-2xl tracking-[2px] text-white uppercase">
-          {problem.title}
-        </h1>
+        <div>
+          <span className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666] block">
+            PROBLEM SPECIFICATION
+          </span>
+          <h1 className="font-bugatti-display text-3xl tracking-[2px] text-white uppercase mt-1">
+            {problem.title}
+          </h1>
+        </div>
 
         <span className="font-bugatti-mono text-xs uppercase tracking-[2px] text-[#5fa657] border border-[#262626] px-3 py-1 bg-[#000000]">
           {problem.difficulty}
@@ -58,42 +57,88 @@ function ProblemPanel() {
       </div>
 
       {/* Body */}
-      <div className="flex-1 overflow-y-auto px-8 py-6 space-y-8">
+      <div className="flex-1 overflow-y-auto px-8 py-6 space-y-8 max-h-[480px]">
+        {/* Description */}
         <section>
           <h2 className="font-bugatti-mono text-[11px] font-semibold uppercase tracking-[2px] text-[#666666] mb-3">
-            PROBLEM SPECIFICATION
+            DESCRIPTION
           </h2>
-          <p className="font-bugatti-serif text-lg text-[#cccccc] leading-relaxed">
+          <p className="font-bugatti-serif text-lg text-[#cccccc] leading-relaxed whitespace-pre-line">
             {problem.description}
           </p>
         </section>
 
-        <section>
-          <h2 className="font-bugatti-mono text-[11px] font-semibold uppercase tracking-[2px] text-[#666666] mb-3">
-            CONSTRAINTS
-          </h2>
-          <ul className="space-y-2">
-            {problem.constraints.map((item, index) => (
-              <li
-                key={index}
-                className="flex items-start gap-3 font-bugatti-mono text-xs text-[#e6e6e6]"
-              >
-                <span className="text-[#666666]">•</span>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </section>
+        {/* Input & Output Format */}
+        {(problem.inputFormat || problem.outputFormat) && (
+          <section className="space-y-4">
+            {problem.inputFormat && (
+              <div>
+                <h2 className="font-bugatti-mono text-[11px] font-semibold uppercase tracking-[2px] text-[#666666] mb-2">
+                  INPUT FORMAT
+                </h2>
+                <div className="font-bugatti-mono text-xs text-[#cccccc] bg-[#000000] border border-[#262626] p-3 leading-relaxed whitespace-pre-line">
+                  {problem.inputFormat}
+                </div>
+              </div>
+            )}
 
-        <section>
-          <h2 className="font-bugatti-mono text-[11px] font-semibold uppercase tracking-[2px] text-[#666666] mb-3">
-            SAMPLE TESTCASE
-          </h2>
-          <div className="space-y-3">
-            <CodeBlock label="INPUT" value={problem.sampleInput} />
-            <CodeBlock label="OUTPUT" value={problem.sampleOutput} />
-          </div>
-        </section>
+            {problem.outputFormat && (
+              <div>
+                <h2 className="font-bugatti-mono text-[11px] font-semibold uppercase tracking-[2px] text-[#666666] mb-2">
+                  OUTPUT FORMAT
+                </h2>
+                <div className="font-bugatti-mono text-xs text-[#cccccc] bg-[#000000] border border-[#262626] p-3 leading-relaxed whitespace-pre-line">
+                  {problem.outputFormat}
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Constraints */}
+        {problem.constraints && problem.constraints.length > 0 && (
+          <section>
+            <h2 className="font-bugatti-mono text-[11px] font-semibold uppercase tracking-[2px] text-[#666666] mb-3">
+              CONSTRAINTS
+            </h2>
+            <ul className="space-y-2">
+              {problem.constraints.map((item, index) => (
+                <li
+                  key={index}
+                  className="flex items-start gap-3 font-bugatti-mono text-xs text-[#e6e6e6]"
+                >
+                  <span className="text-[#666666]">•</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* Examples */}
+        {problem.examples && problem.examples.length > 0 && (
+          <section>
+            <h2 className="font-bugatti-mono text-[11px] font-semibold uppercase tracking-[2px] text-[#666666] mb-3">
+              EXAMPLES
+            </h2>
+            <div className="space-y-4">
+              {problem.examples.map((ex, idx) => (
+                <div key={idx} className="space-y-2">
+                  <div className="font-bugatti-mono text-[10px] uppercase tracking-[1.5px] text-[#999999]">
+                    EXAMPLE {idx + 1}
+                  </div>
+                  <CodeBlock label="INPUT" value={ex.input} />
+                  <CodeBlock label="OUTPUT" value={ex.output} />
+                  {ex.explanation && (
+                    <div className="font-bugatti-serif text-sm text-[#999999] italic mt-1">
+                      Note: {ex.explanation}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

@@ -1,23 +1,13 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-function BattlePlayHeader({ battleId }) {
-  const [battle, setBattle] = useState(null);
-
-  useEffect(() => {
-    const fetchBattle = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:5000/api/battle/${battleId}`
-        );
-        setBattle(response.data.battle);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchBattle();
-  }, [battleId]);
+function BattlePlayHeader({
+  battle,
+  username = "Player",
+  activeProblemIndex = 0,
+  setActiveProblemIndex = () => {},
+  timeRemaining = "30:00",
+}) {
+  const navigate = useNavigate();
 
   if (!battle) {
     return (
@@ -27,70 +17,121 @@ function BattlePlayHeader({ battleId }) {
     );
   }
 
+  const problems = Array.isArray(battle.problems) ? battle.problems : [];
+
+  const formattedDifficulty = Array.isArray(battle.difficulty)
+    ? battle.difficulty.join(", ").toUpperCase()
+    : typeof battle.difficulty === "string"
+    ? battle.difficulty.toUpperCase()
+    : "EASY";
+
+  const formattedStatus = typeof battle.status === "string"
+    ? battle.status.toUpperCase()
+    : "RUNNING";
+
   return (
-    <div className="bg-[#141414] border border-[#262626] p-8 rounded-none">
-      {/* First Row */}
-      <div className="flex justify-between items-center">
-        <div>
-          <div className="font-bugatti-mono text-[11px] uppercase tracking-[2px] text-[#666666]">
-            ACTIVE BATTLE ARENA
+    <div className="sticky top-0 bg-[#141414] border border-[#262626] p-6 rounded-none z-30 shadow-2xl space-y-6">
+      {/* Top Row: Navigation, Arena Details, Player Tag, Sticky Timer */}
+      <div className="flex flex-wrap justify-between items-center gap-4">
+        <div className="flex items-center gap-6">
+          <button
+            type="button"
+            onClick={() => navigate("/battle")}
+            className="font-bugatti-mono text-xs uppercase tracking-[2px] text-[#999999] hover:text-white transition-colors cursor-pointer"
+          >
+            ← EXIT ARENA
+          </button>
+          <div>
+            <div className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666]">
+              ACTIVE ARENA MATCH // {battle.battleId}
+            </div>
+            <h1 className="font-bugatti-display text-3xl tracking-[3px] text-white uppercase mt-0.5">
+              {battle.battleName || "ARENA DUEL"}
+            </h1>
           </div>
-          <h1 className="font-bugatti-display text-4xl tracking-[3px] text-white uppercase mt-1">
-            {battle.battleName}
-          </h1>
-          <p className="font-bugatti-mono text-xs text-[#999999] tracking-[1.5px] uppercase mt-1">
-            KEY: {battle.battleId}
-          </p>
         </div>
 
-        <div className="text-right">
-          <div className="font-bugatti-mono text-3xl font-normal text-white tracking-[2px]">
-            30:00
+        {/* Center/Right Info: User Tag + Countdown Timer + Match Status */}
+        <div className="flex items-center gap-5 ml-auto">
+          {/* USERNAME BADGE */}
+          <div className="bg-[#000000] border border-[#262626] px-4 py-2 flex items-center gap-3">
+            <div className="w-2 h-2 rounded-full bg-[#5fa657]" />
+            <div className="text-left font-bugatti-mono">
+              <span className="text-[9px] uppercase tracking-[2px] text-[#666666] block">
+                PLAYER // IDENTITY
+              </span>
+              <span className="text-xs uppercase tracking-[1.5px] text-white font-semibold">
+                {username}
+              </span>
+            </div>
           </div>
-          <div className="font-bugatti-mono text-xs uppercase tracking-[2px] text-[#5fa657] mt-1">
-            STATUS // {battle.status}
+
+          {/* STICKY COUNTDOWN TIMER */}
+          <div className="bg-[#000000] border border-[#262626] px-5 py-2 flex flex-col items-center">
+            <span className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666]">
+              TIME REMAINING
+            </span>
+            <span className="font-bugatti-mono text-2xl tracking-[2px] text-white font-semibold">
+              ⏱ {timeRemaining}
+            </span>
+          </div>
+
+          <div className="hidden sm:block text-right font-bugatti-mono">
+            <div className="text-xs uppercase tracking-[2px] text-[#5fa657]">
+              STATUS // {formattedStatus}
+            </div>
+            <div className="text-[10px] text-[#666666] uppercase tracking-[1px] mt-1">
+              HOST: {battle.host || "ANONYMOUS"}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Second Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-8 pt-6 border-t border-[#262626]">
-        <div>
-          <p className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666]">
-            DIFFICULTY
-          </p>
-          <h3 className="font-bugatti-mono text-sm tracking-[1.5px] text-white uppercase mt-1">
-            {battle.difficulty}
-          </h3>
-        </div>
+      {/* Problem Navigation Tabs */}
+      {problems.length > 0 && (
+        <div className="border-t border-[#262626] pt-4 flex items-center justify-between">
+          <div className="flex items-center gap-2 overflow-x-auto">
+            <span className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666] mr-2">
+              PROBLEMS:
+            </span>
+            {problems.map((p, idx) => {
+              const probObj =
+                p.problemId && typeof p.problemId === "object" ? p.problemId : p;
+              const probTitle = probObj.title || `Q${idx + 1}`;
+              const isSelected = activeProblemIndex === idx;
+              return (
+                <button
+                  key={probObj._id || idx}
+                  type="button"
+                  onClick={() => setActiveProblemIndex(idx)}
+                  className={`
+                    px-4
+                    py-2
+                    font-bugatti-mono
+                    text-xs
+                    uppercase
+                    tracking-[1.5px]
+                    border
+                    transition-all
+                    cursor-pointer
+                    ${
+                      isSelected
+                        ? "bg-white text-black border-white"
+                        : "bg-[#000000] text-[#999999] border-[#262626] hover:border-[#3a3a3a] hover:text-white"
+                    }
+                  `}
+                >
+                  PROBLEM {idx + 1}: {probTitle}
+                </button>
+              );
+            })}
+          </div>
 
-        <div>
-          <p className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666]">
-            LANGUAGES
-          </p>
-          <h3 className="font-bugatti-mono text-sm tracking-[1.5px] text-white uppercase mt-1">
-            {battle.languages.join(", ")}
-          </h3>
+          <div className="hidden md:block font-bugatti-mono text-[11px] uppercase tracking-[1.5px] text-[#999999]">
+            DIFFICULTY: {formattedDifficulty} · CAPACITY: {battle.players?.length || 0}/{battle.playerCapacity || 2}
+          </div>
         </div>
-
-        <div>
-          <p className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666]">
-            PLAYERS
-          </p>
-          <h3 className="font-bugatti-mono text-sm tracking-[1.5px] text-white uppercase mt-1">
-            {battle.players.length} / {battle.playerCapacity}
-          </h3>
-        </div>
-
-        <div>
-          <p className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666]">
-            ARENA HOST
-          </p>
-          <h3 className="font-bugatti-mono text-sm tracking-[1.5px] text-white uppercase mt-1">
-            {battle.host}
-          </h3>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
