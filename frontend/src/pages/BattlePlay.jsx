@@ -34,6 +34,7 @@ function BattlePlay() {
   // Custom Stdin, Output, & Results State
   const [customInput, setCustomInput] = useState("");
   const [executionOutput, setExecutionOutput] = useState("");
+  const [runResult, setRunResult] = useState(null);
   const [submissionResult, setSubmissionResult] = useState(null);
 
   // Execution & Submission Flags
@@ -267,7 +268,7 @@ function BattlePlay() {
 
   return (
     <div className="min-h-screen bg-[#000000] text-white flex flex-col justify-between selection:bg-white selection:text-black">
-      <main className="max-w-7xl w-full mx-auto px-6 py-6 space-y-6 flex-1">
+      <main className="max-w-7xl w-full mx-auto px-8 py-8 space-y-8 flex-1">
         {/* Sticky Header with Timer & Multi-Problem Tabs */}
         <BattlePlayHeader
           battle={battle}
@@ -278,7 +279,7 @@ function BattlePlay() {
         />
 
         {/* Problem Panel + Realtime Scoreboard */}
-        <div className="grid grid-cols-12 gap-6">
+        <div className="grid grid-cols-12 gap-8">
           <div className="col-span-12 lg:col-span-8">
             <ProblemPanel problem={activeProblem} />
           </div>
@@ -300,14 +301,17 @@ function BattlePlay() {
 
         {/* Execution & Submission Results Terminal */}
         <BattleTerminal
+          problem={activeProblem}
           programInput={customInput}
           setProgramInput={setCustomInput}
           output={executionOutput}
+          runResult={runResult}
           submissionResult={submissionResult}
           running={running}
           submitting={submitting}
           onClear={() => {
             setExecutionOutput("");
+            setRunResult(null);
             setSubmissionResult(null);
           }}
         />
@@ -317,10 +321,12 @@ function BattlePlay() {
           code={currentCode}
           language={selectedLanguage}
           battleId={battleId}
+          problem={activeProblem}
           problemId={activeProblem?._id}
           username={username}
           customInput={customInput}
           setOutput={setExecutionOutput}
+          setRunResult={setRunResult}
           setSubmissionResult={setSubmissionResult}
           running={running}
           setRunning={setRunning}

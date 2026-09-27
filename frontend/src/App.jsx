@@ -43,7 +43,11 @@ function App() {
 
 <Route
     path="/battle"
-    element={<BattleSettings />}
+    element={
+      <ProtectedRoute>
+        <BattleSettings />
+      </ProtectedRoute>
+    }
 />
 
 <Route

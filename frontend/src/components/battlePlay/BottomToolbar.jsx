@@ -6,10 +6,12 @@ function BottomToolbar({
   code,
   language,
   battleId,
+  problem,
   problemId,
   username,
   customInput = "",
   setOutput = () => {},
+  setRunResult = () => {},
   setSubmissionResult = () => {},
   running = false,
   setRunning = () => {},
@@ -27,19 +29,43 @@ function BottomToolbar({
     try {
       setRunning(true);
       setSubmissionResult(null);
+      setRunResult(null);
       setOutput("");
 
-      toast.loading("Running code via Judge0...", { id: "runCode" });
+      toast.loading("Running code against test cases...", { id: "runCode" });
+
+      const testCasesToRun =
+        problem?.testCases && problem.testCases.length > 0
+          ? problem.testCases
+          : problem?.examples?.map((ex) => ({
+              input: ex.input,
+              expectedOutput: ex.output,
+              isHidden: false,
+              points: 10,
+            })) || [];
 
       const data = await runCodeService({
         code,
         language,
-        input: customInput,
+        input: customInput || "",
+        testCases: testCasesToRun.length > 0 ? testCasesToRun : null,
+        problemSlug: problem?.slug,
       });
 
-      const outText = data.output || "Completed with no output.";
-      setOutput(outText);
-      toast.success("Execution completed!", { id: "runCode" });
+      if (data.isBatch) {
+        setRunResult(data);
+        const passedCount = data.passedTests || 0;
+        const totalCount = data.totalTests || 0;
+        if (data.overallStatus === "Accepted") {
+          toast.success(`Passed: ${passedCount}/${totalCount} test cases!`, { id: "runCode" });
+        } else {
+          toast.error(`${data.overallStatus}: ${passedCount}/${totalCount} passed`, { id: "runCode" });
+        }
+      } else {
+        const outText = data.output || "Completed with no output.";
+        setOutput(outText);
+        toast.success("Execution completed!", { id: "runCode" });
+      }
     } catch (error) {
       const errOut = error.response?.data?.output || "❌ Execution Failed.";
       setOutput(errOut);
@@ -65,6 +91,7 @@ function BottomToolbar({
     try {
       setSubmitting(true);
       setOutput("");
+      setRunResult(null);
       setSubmissionResult(null);
 
       toast.loading("Evaluating test cases against Judge0...", {
@@ -125,7 +152,7 @@ function BottomToolbar({
           type="button"
           onClick={handleRun}
           disabled={running || submitting}
-          className="bugatti-button-secondary text-xs cursor-pointer disabled:opacity-50"
+          className="bugatti-button-secondary text-xs min-w-[130px] text-center cursor-pointer disabled:opacity-50"
         >
           {running ? "EXECUTING..." : "▶ RUN CODE"}
         </button>
@@ -134,7 +161,7 @@ function BottomToolbar({
           type="button"
           onClick={handleSubmit}
           disabled={running || submitting}
-          className="bugatti-button-primary text-xs cursor-pointer disabled:opacity-50"
+          className="bugatti-button-primary text-xs min-w-[170px] text-center cursor-pointer disabled:opacity-50"
         >
           {submitting ? "SUBMITTING..." : "SUBMIT SOLUTION"}
         </button>

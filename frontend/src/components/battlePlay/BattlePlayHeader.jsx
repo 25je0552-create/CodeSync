@@ -89,9 +89,9 @@ function BattlePlayHeader({
 
       {/* Problem Navigation Tabs */}
       {problems.length > 0 && (
-        <div className="border-t border-[#262626] pt-4 flex items-center justify-between">
-          <div className="flex items-center gap-2 overflow-x-auto">
-            <span className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666] mr-2">
+        <div className="border-t border-[#262626] pt-4 flex items-center justify-between gap-8">
+          <div className="flex items-center gap-2.5 overflow-x-auto pr-6">
+            <span className="font-bugatti-mono text-[10px] uppercase tracking-[2px] text-[#666666] mr-2 shrink-0">
               PROBLEMS:
             </span>
             {problems.map((p, idx) => {
@@ -114,6 +114,7 @@ function BattlePlayHeader({
                     border
                     transition-all
                     cursor-pointer
+                    shrink-0
                     ${
                       isSelected
                         ? "bg-white text-black border-white"
@@ -127,8 +128,10 @@ function BattlePlayHeader({
             })}
           </div>
 
-          <div className="hidden md:block font-bugatti-mono text-[11px] uppercase tracking-[1.5px] text-[#999999]">
-            DIFFICULTY: {formattedDifficulty} · CAPACITY: {battle.players?.length || 0}/{battle.playerCapacity || 2}
+          <div className="hidden md:flex items-center gap-3 font-bugatti-mono text-[11px] uppercase tracking-[1.5px] text-[#999999] shrink-0 pl-8 border-l border-[#262626] whitespace-nowrap">
+            <span>DIFFICULTY: {formattedDifficulty}</span>
+            <span className="text-[#3a3a3a]">·</span>
+            <span>CAPACITY: {battle.players?.length || 0}/{battle.playerCapacity || 2}</span>
           </div>
         </div>
       )}

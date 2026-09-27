@@ -1,10 +1,19 @@
 function TimerSelector({ duration, setDuration }) {
   const handleChange = (e) => {
-    const val = parseInt(e.target.value, 10);
-    if (isNaN(val) || val < 1) {
+    const val = e.target.value;
+    if (val === "") {
+      setDuration("");
+      return;
+    }
+    const num = parseInt(val, 10);
+    if (!isNaN(num)) {
+      setDuration(num);
+    }
+  };
+
+  const handleBlur = () => {
+    if (duration === "" || duration < 1) {
       setDuration(1);
-    } else {
-      setDuration(val);
     }
   };
 
@@ -19,6 +28,7 @@ function TimerSelector({ duration, setDuration }) {
         max="180"
         value={duration}
         onChange={handleChange}
+        onBlur={handleBlur}
         className="
           w-32
           bg-transparent

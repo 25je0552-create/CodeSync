@@ -3,12 +3,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 function ProtectedRoute({ children }) {
-  const hasLocalUser = Boolean(
-    localStorage.getItem("username") || localStorage.getItem("userId")
-  );
-
-  const [loading, setLoading] = useState(!hasLocalUser);
-  const [authenticated, setAuthenticated] = useState(hasLocalUser);
+  const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -25,10 +21,9 @@ function ProtectedRoute({ children }) {
         }
       } catch {
         if (isMounted) {
-          // If neither cookie nor localStorage is valid, unauthenticate
-          if (!localStorage.getItem("username") && !localStorage.getItem("userId")) {
-            setAuthenticated(false);
-          }
+          localStorage.removeItem("username");
+          localStorage.removeItem("userId");
+          setAuthenticated(false);
           setLoading(false);
         }
       }

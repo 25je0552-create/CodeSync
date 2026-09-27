@@ -99,7 +99,7 @@ function BattleSettings() {
         battleName,
         difficulty,
         languages,
-        duration,
+        duration: Number(duration) || 30,
         playerCapacity,
         battleType,
         allowSpectators,
@@ -108,7 +108,7 @@ function BattleSettings() {
         numberOfProblems:
           problemSelectionMode === "selected"
             ? selectedProblemIds.length
-            : numberOfProblems,
+            : Number(numberOfProblems) || 1,
         selectedProblemIds,
       });
 
@@ -196,8 +196,20 @@ function BattleSettings() {
                       max="20"
                       value={numberOfProblems}
                       onChange={(e) => {
-                        const val = parseInt(e.target.value, 10);
-                        setNumberOfProblems(isNaN(val) || val < 1 ? 1 : val);
+                        const val = e.target.value;
+                        if (val === "") {
+                          setNumberOfProblems("");
+                          return;
+                        }
+                        const num = parseInt(val, 10);
+                        if (!isNaN(num)) {
+                          setNumberOfProblems(num);
+                        }
+                      }}
+                      onBlur={() => {
+                        if (numberOfProblems === "" || numberOfProblems < 1) {
+                          setNumberOfProblems(1);
+                        }
                       }}
                       className="
                         w-24
